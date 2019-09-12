@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.southwind.dao.MenuDao">
+  <resultMap id="BaseResultMap" type="com.southwind.entity.Menu">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="price" jdbcType="DOUBLE" property="price" />
+    <result column="flavor" jdbcType="VARCHAR" property="flavor" />
+    <association property="type" select="com.southwind.dao.TypeDao.findById" column="tid"></association>
+  </resultMap>
+
+<resultMap id="MenuMap" type="com.southwind.entity.Menu">
+  <id column="id" jdbcType="INTEGER" property="id" />
+  <result column="name" jdbcType="VARCHAR" property="name" />
+  <result column="price" jdbcType="DOUBLE" property="price" />
+  <result column="flavor" jdbcType="VARCHAR" property="flavor" />
+  <association property="type" javaType="com.southwind.entity.Type">
+    <id column="t_id" property="id"/>
+    <result column="t_name" property="name"/>
+  </association>
+</resultMap>
+
+
+  <select id="findAll" resultMap="BaseResultMap">
+    select * from t_menu limit #{param1},#{param2}
+  </select>
+
+
+
+  <select id="count" resultType="int">
+    select count(*) from t_menu;
+  </select>
+
+  <select id="findById" parameterType="Integer" resultType="com.southwind.entity.Menu">
+    select * from t_menu where id = #{id}
+  </select>
+
+  <insert id="save" parameterType="com.southwind.entity.Menu">
+    insert into t_menu(name,price,flavor) values (#{name},#{price},#{flavor})
+  </insert>
+
+  <update id="update" parameterType="com.southwind.entity.Menu">
+    update t_menu set name = #{name},price = #{price},flavor = #{flavor} where id = #{id}
+  </update>
+
+  <delete id="deleteById" parameterType="Integer">
+    delete from t_menu where id = #{id}
+  </delete>
+
+  <select id="findAllToTest" resultMap="MenuMap">
+  select m.* ,t.id as t_id,t.name as t_name
+    from t_menu as m
+    LEFT OUTER JOIN	t_type t on m.tid = t.id
+  </select>
+</mapper>
